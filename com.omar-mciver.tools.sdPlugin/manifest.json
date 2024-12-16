@@ -18,7 +18,7 @@
             ]
         }
     ],
-    "Category": "My Tools",
+    "Category": "Super Tools",
     "CategoryIcon": "imgs/plugin/category-icon",
     "CodePath": "bin/plugin.js",
     "Description": "My privately developed stream deck plugins",

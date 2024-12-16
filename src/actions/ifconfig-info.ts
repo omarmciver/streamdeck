@@ -11,32 +11,40 @@ export class IfConfigInfo extends SingletonAction<IfConfigInfoSettings> {
 	}
 
 	override async onKeyDown(ev: KeyDownEvent<IfConfigInfoSettings>): Promise<void> {
-		// Update the count from the settings.
+		await ev.action.setTitle("Asking...");
 		const { settings } = ev.payload;
-		const response = await fetch("https://ifconfig.me/ip");
-		const ipAddr = await response.text();
-		settings.ip_addr = ipAddr.replace(/\./g, ".\n");
 		settings.keyDownTimestamp = Date.now();
-		console.log(settings.keyDownTimestamp);
-
-		// Update the current count in the action's settings, and change the title.
 		await ev.action.setSettings(settings);
-		return ev.action.setTitle(`${ev.payload.settings.ip_addr ?? "No IP Address"}`);
+		setTimeout(async () => {
+			// Update the count from the settings.
+			const response = await fetch("https://ifconfig.me/ip");
+			const ipAddr = await response.text();
+			settings.ip_addr = ipAddr.replace(/\./g, ".\n");
+			// Update the current count in the action's settings, and change the title.
+			await ev.action.setSettings(settings);
+			await ev.action.setTitle(`${ev.payload.settings.ip_addr ?? "No IP Address"}`);
+		}, 500);
 	}
 
 	override async onKeyUp(ev: KeyUpEvent<IfConfigInfoSettings>): Promise<void> {
 		// Calculate the duration the key was pressed
 		const { settings } = ev.payload;
-		const keyUpTimestamp = Date.now();
-		const duration = settings.keyDownTimestamp ? keyUpTimestamp - settings.keyDownTimestamp : 0;
-		console.log(duration);
-		// Check if the key was pressed for more than a second
-		if (duration > 500) {
-			streamDeck.system.openUrl("https://ifconfig.me");
+		if (settings.delayToOpenUrl) {
+			const keyUpTimestamp = Date.now();
+			streamDeck.logger.info(`Key up timestamp: ${keyUpTimestamp}`);
+			streamDeck.logger.info(`Key down timestamp: ${settings.keyDownTimestamp}`);
+			const duration = settings.keyDownTimestamp ? (keyUpTimestamp - settings.keyDownTimestamp) : 0;
+			// Check if the key was pressed for more than a second
+			if (duration - 100 > (settings.delayToOpenUrl * 1000)) {
+				streamDeck.system.openUrl("https://ifconfig.me");
+				await ev.action.showOk();
+			}
+			else {
+
+			}
 		}
-		else {
-			// return ev.action.setTitle(`${duration.toString()}`);
-		}
+		settings.keyDownTimestamp = undefined
+		await ev.action.setSettings(settings);
 	}
 }
 
@@ -46,4 +54,5 @@ export class IfConfigInfo extends SingletonAction<IfConfigInfoSettings> {
 type IfConfigInfoSettings = {
 	ip_addr?: string;
 	keyDownTimestamp?: number;
+	delayToOpenUrl?: number;
 };
