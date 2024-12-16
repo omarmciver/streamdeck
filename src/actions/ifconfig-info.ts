@@ -31,7 +31,7 @@ export class IfConfigInfo extends SingletonAction<IfConfigInfoSettings> {
 		const duration = settings.keyDownTimestamp ? keyUpTimestamp - settings.keyDownTimestamp : 0;
 		console.log(duration);
 		// Check if the key was pressed for more than a second
-		if (duration > 1000) {
+		if (duration > 500) {
 			streamDeck.system.openUrl("https://ifconfig.me");
 		}
 		else {
