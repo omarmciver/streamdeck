@@ -313,8 +313,6 @@ packages:
       rollup: ^2.14.0||^3.0.0||^4.0.0
       tslib: '*'
       typescript: '>=3.7.0'
-      tslib: '*'
-      typescript: '>=3.7.0'
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -460,12 +458,10 @@ packages:
     engines: {node: '>18.12'}
     peerDependencies:
       '@vue/compiler-sfc': 3.x
-      '@vue/compiler-sfc': 3.x
       prettier: 2.x - 3.x
       prettier-plugin-svelte: 3.x
       svelte: 4.x || 5.x
     peerDependenciesMeta:
-      '@vue/compiler-sfc':
       '@vue/compiler-sfc':
         optional: true
       prettier-plugin-svelte:
